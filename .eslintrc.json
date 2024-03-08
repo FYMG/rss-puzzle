@@ -1,0 +1,44 @@
+{
+    "root": true,
+    "plugins": ["import", "jsx-a11y"],
+    "extends": [
+        "airbnb-base",
+        "plugin:jsx-a11y/recommended",
+        "plugin:prettier/recommended"
+    ],
+    "env": {
+        "es6": true,
+        "browser": true,
+        "node": true
+    },
+    "rules": {
+        "import/extensions": "off",
+        "no-debugger": "off",
+        "no-console": 0,
+        "class-methods-use-this": "off",
+        "import/no-extraneous-dependencies": "off"
+    },
+    "overrides": [
+        {
+            "files": ["**/*.ts", "**/*.tsx"],
+            "parser": "@typescript-eslint/parser",
+            "plugins": ["@typescript-eslint"],
+            "extends": [
+                "plugin:@typescript-eslint/recommended-type-checked",
+                "plugin:@typescript-eslint/stylistic-type-checked",
+                "plugin:@typescript-eslint/recommended",
+                "airbnb-typescript/base"
+            ],
+            "parserOptions": {
+                "ecmaVersion": 2023,
+                "sourceType": "module",
+                "project": ["./tsconfig.json", "./tsconfig.node.json"]
+            },
+            "rules": {
+                "@typescript-eslint/no-explicit-any": "error",
+                "@typescript-eslint/indent": 0,
+                "@typescript-eslint/dot-notation": 0
+            }
+        }
+    ]
+}
