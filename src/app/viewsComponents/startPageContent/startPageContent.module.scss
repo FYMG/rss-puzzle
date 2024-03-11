@@ -1,0 +1,96 @@
+.main {
+  margin-top: 45px;
+
+  &__content {
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  @media (width <= 750px) {
+    margin-bottom: 200px;
+  }
+}
+
+.about-game {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 768px;
+
+  &__text {
+    max-width: 375px;
+    @media (width <= 750px) {
+      order: 2;
+    }
+  }
+
+  &__banner {
+    max-width: 375px;
+    max-height: 375px;
+    @media (width <= 750px) {
+      order: 1;
+    }
+  }
+
+  &__wrapper {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+
+    h2 {
+      font-family: Caveat, cursive;
+    }
+
+    p {
+      font-family: Caveat, cursive;
+      text-align: justify;
+    }
+
+    @media (width <= 780px) {
+      justify-content: center;
+      order: 2;
+    }
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 15px;
+
+  &__useful-links {
+    display: flex;
+    flex-direction: row;
+    gap: 15px;
+    align-items: center;
+  }
+
+  &__start-button-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+
+  &__start-button {
+    width: 130px;
+    height: 50px;
+  }
+
+  @media (width <= 420px) {
+    flex-flow: row wrap;
+    justify-content: center;
+
+    .useful-links {
+      order: 2;
+    }
+
+    .start-button {
+      order: 1;
+    }
+  }
+}

@@ -14,7 +14,7 @@ const config = defineConfig(({ command }) => {
             dts(),
             tsconfigPaths(),
             eslint({
-                cache: true,
+                cache: false,
                 fix: true,
                 lintOnStart: true,
                 include: ['src/**/*.{js, jsx, ts, tsx, cjs, mjs}'],
@@ -22,7 +22,7 @@ const config = defineConfig(({ command }) => {
             stylelint({
                 cacheLocation: 'node_modules/.cache/stylelint/.stylelintcache',
                 fix: true,
-                cache: true,
+                cache: false,
                 lintOnStart: true,
                 include: ['src/**/*.{css,scss,sass,less,styl,vue,svelte}'],
             }),

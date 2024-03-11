@@ -1,11 +1,7 @@
 {
     "root": true,
     "plugins": ["import", "jsx-a11y"],
-    "extends": [
-        "airbnb-base",
-        "plugin:jsx-a11y/recommended",
-        "plugin:prettier/recommended"
-    ],
+    "extends": ["airbnb-base", "plugin:jsx-a11y/recommended", "prettier"],
     "env": {
         "es6": true,
         "browser": true,
@@ -27,7 +23,8 @@
                 "plugin:@typescript-eslint/recommended-type-checked",
                 "plugin:@typescript-eslint/stylistic-type-checked",
                 "plugin:@typescript-eslint/recommended",
-                "airbnb-typescript/base"
+                "airbnb-typescript/base",
+                "prettier"
             ],
             "parserOptions": {
                 "ecmaVersion": 2023,
@@ -36,7 +33,7 @@
             },
             "rules": {
                 "@typescript-eslint/no-explicit-any": "error",
-                "@typescript-eslint/indent": 0,
+                "@typescript-eslint/indent": ["warn", 4],
                 "@typescript-eslint/dot-notation": 0
             }
         }
