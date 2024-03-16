@@ -4,8 +4,11 @@ import mergeChildrenLists from '@utils/helpers/mergeChildrenLists';
 import TextStrings from '@utils/consts/text';
 import style from './footer.module.scss';
 
-const footer: typeof createComponent<HTMLDivElement> = ({ classList, children, ...props }) => {
-
+const footer: typeof createComponent<HTMLDivElement> = ({
+    classList,
+    children,
+    ...props
+}) => {
     const content = createComponent<HTMLElement>({
         tag: 'div',
         classList: style['footer__content'],

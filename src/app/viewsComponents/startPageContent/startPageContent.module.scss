@@ -1,3 +1,4 @@
+/* postcss-bem-linter: define main */
 .main {
   margin-top: 45px;
 
@@ -12,11 +13,21 @@
   }
 }
 
+/* postcss-bem-linter: define about-game */
 .about-game {
   display: flex;
   align-items: center;
   justify-content: center;
   max-width: 768px;
+
+  &__title {
+    font-family: Caveat, cursive;
+  }
+
+  &__description {
+    font-family: Caveat, cursive;
+    text-align: justify;
+  }
 
   &__text {
     max-width: 375px;
@@ -42,15 +53,6 @@
 
     width: 100%;
 
-    h2 {
-      font-family: Caveat, cursive;
-    }
-
-    p {
-      font-family: Caveat, cursive;
-      text-align: justify;
-    }
-
     @media (width <= 780px) {
       justify-content: center;
       order: 2;
@@ -58,6 +60,7 @@
   }
 }
 
+/* postcss-bem-linter: define actions */
 .actions {
   display: flex;
   gap: 15px;
@@ -85,11 +88,11 @@
     flex-flow: row wrap;
     justify-content: center;
 
-    .useful-links {
+    &__useful-links {
       order: 2;
     }
 
-    .start-button {
+    &__start-button {
       order: 1;
     }
   }

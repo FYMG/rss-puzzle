@@ -1,13 +1,16 @@
 import createComponent from '@components/baseComponent.ts';
 import mergeClassLists from '@utils/helpers/mergeClassLists';
 import mergeChildrenLists from '@utils/helpers/mergeChildrenLists';
-import bannerComponent from '@components/banner/bannerComponent.ts';
+import bannerComponent from '@components/banner/bannerComponent';
 import bannerImg from '@assets/banner-img.png';
 import TextStrings from '@utils/consts/text';
 import logoLinkComponent from '@components/logoLink/logoLinkComponent';
 import rsLogoImg from '@assets/rs-logo.png';
 import gitLogoImg from '@assets/gh-logo.png';
 import buttonComponent from '@components/button/buttonComponent';
+import { useAuthProvider } from '@services/auth';
+import { useRouter } from '@services/router';
+import Routes from '@utils/consts/routes';
 import style from './startPageContent.module.scss';
 
 const startPageContent: typeof createComponent<HTMLElement> = ({
@@ -15,6 +18,8 @@ const startPageContent: typeof createComponent<HTMLElement> = ({
     children,
     ...props
 }) => {
+    const { isAuth, user } = useAuthProvider();
+    const { route } = useRouter();
     const aboutGameWrapper = createComponent({
         tag: 'div',
         classList: style['about-game__wrapper'],
@@ -30,7 +35,9 @@ const startPageContent: typeof createComponent<HTMLElement> = ({
                     }),
                     createComponent({
                         tag: 'p',
-                        textContent: TextStrings.startPageAboutDescription,
+                        textContent: isAuth
+                            ? `С возвращением ${user?.name ?? 'Иван'} ${user?.surname ?? 'Иваныч'} быстрей жми на кнопку чтобы продолжить играть!`
+                            : TextStrings.startPageAboutDescription,
                         classList: style['about-game__description'],
                     }),
                     createComponent({
@@ -67,8 +74,14 @@ const startPageContent: typeof createComponent<HTMLElement> = ({
                                 children: [
                                     buttonComponent({
                                         classList: style['actions__start-button'],
-                                        textContent: 'Начать игру',
-                                    }),
+                                        textContent: isAuth
+                                            ? `Продолжить`
+                                            : `Регистрация`,
+                                    }).addEventListener('click', () =>
+                                        isAuth
+                                            ? route(Routes.gamePage)
+                                            : route(Routes.loginPage, { reg: true }),
+                                    ),
                                 ],
                             }),
                         ],

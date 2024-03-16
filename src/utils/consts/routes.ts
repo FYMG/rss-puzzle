@@ -1,20 +1,28 @@
 import startPageView from '@views/startPage';
-// import loginPageView from '@views/loginPage';
 import { FunctionComponent } from '@components/baseComponent';
+import loginPageView from '@views/loginPage.ts';
+import gamePage from '@views/gamePage.ts';
 
-export interface IRoute<ParamsKeys extends keyof any = keyof any> {
-    name: string
-    path: string
-    view: FunctionComponent<HTMLTemplateElement>
-    needAuth: boolean
-    params?: Record<ParamsKeys, string | null>
+export interface IRouteParams {
+    [key: string]: string | boolean | number | undefined | null;
+    difficulty?: number;
+    level?: number;
+    reg?: boolean;
+}
+
+export interface IRoute {
+    name: string;
+    path: string;
+    view: FunctionComponent<HTMLTemplateElement>;
+    needAuth: boolean;
+    params: IRouteParams;
 }
 
 export interface IRoutes {
-    [key: string]: IRoute
-    startPage: IRoute<'a' | 'b'>
-    loginPage: IRoute
-    gamePage: IRoute<'difficulty' | 'level'>
+    [key: string]: IRoute;
+    startPage: IRoute;
+    loginPage: IRoute;
+    gamePage: IRoute;
 }
 
 const Routes: IRoutes = {
@@ -23,27 +31,27 @@ const Routes: IRoutes = {
         path: '/',
         view: startPageView,
         needAuth: false,
-        params: {
-            a: null,
-            b: null
-        }
+        params: {},
     },
-    loginPage:{
+    loginPage: {
         name: 'loginPage',
         path: '/login',
-        view: startPageView,
-        needAuth: false
+        view: loginPageView,
+        needAuth: false,
+        params: {
+            reg: undefined,
+        },
     },
-    gamePage:{
+    gamePage: {
         name: 'gamePage',
         path: '/game',
-        view: startPageView,
+        view: gamePage,
         needAuth: true,
         params: {
-            'difficulty': null,
-            'level': null
-        }
-    }
-}
+            difficulty: undefined,
+            level: undefined,
+        },
+    },
+};
 
-export default Routes
+export default Routes;

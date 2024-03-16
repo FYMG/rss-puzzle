@@ -14,10 +14,10 @@ const config = defineConfig(({ command }) => {
             dts(),
             tsconfigPaths(),
             eslint({
-                cache: false,
                 fix: true,
+                cache: false,
                 lintOnStart: true,
-                include: ['src/**/*.{js, jsx, ts, tsx, cjs, mjs}'],
+                include: 'src/**/*.ts',
             }),
             stylelint({
                 cacheLocation: 'node_modules/.cache/stylelint/.stylelintcache',

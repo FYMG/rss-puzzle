@@ -42,6 +42,12 @@
     transition: 0.15s ease-in;
   }
 
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  &:disabled,
   &:hover,
   &:active {
     &::after {

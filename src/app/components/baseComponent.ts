@@ -1,7 +1,7 @@
-import removeDuplicates from '@utils/helpers/removeDuplicates.ts';
+import removeDuplicates from '@utils/helpers/removeDuplicates';
 
 export type IProps<T extends HTMLElement = HTMLElement> = Partial<
-Omit<T, 'style' | 'dataset' | 'classList' | 'children' | 'tagName'>
+    Omit<T, 'style' | 'dataset' | 'classList' | 'children' | 'tagName'>
 > & {
     tag?: keyof HTMLElementTagNameMap;
     classList?: TClassList;
@@ -29,9 +29,15 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     rerender() {
         const { tag, classList, textContent, children, ...props } = this.props;
         this.node = Object.assign(this.node, props);
-        if (classList) this.applyClassList(this.node, classList);
-        if (textContent) this.node.textContent = textContent;
-        if (children) this.children = this.appendChildrenToNode(this.node, children);
+        if (classList) {
+            this.applyClassList(this.node, classList);
+        }
+        if (textContent) {
+            this.node.textContent = textContent;
+        }
+        if (children) {
+            this.children = this.appendChildrenToNode(this.node, children);
+        }
         this.children = removeDuplicates(this.children).filter((child) =>
             this.isChild(child),
         );
@@ -48,9 +54,15 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
         this.props = { tag, classList, textContent, children, ...props } as IProps<T>;
         let node = document.createElement(tag ?? 'div') as T;
         node = Object.assign(node, props);
-        if (classList) this.applyClassList(node, classList);
-        if (textContent) node.textContent = textContent;
-        if (children) this.children = this.appendChildrenToNode(node, children);
+        if (classList) {
+            this.applyClassList(node, classList);
+        }
+        if (textContent) {
+            node.textContent = textContent;
+        }
+        if (children) {
+            this.children = this.appendChildrenToNode(node, children);
+        }
         this.children = removeDuplicates(this.children).filter((child) =>
             this.isChild(child),
         );
@@ -64,15 +76,20 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     public appendChildren(children: NonNullable<TChildren>): this {
         if (Array.isArray(children)) {
             children.forEach((child) => this.append(child));
-        } else this.append(children);
+        } else {
+            this.append(children);
+        }
         return this;
     }
 
     public append(child: BaseComponent | string): this {
         const addedNode = this.appendToNode(this.node, child);
-        if (addedNode) this.children.push(addedNode);
-        this.children = removeDuplicates(this.children).filter((child) =>
-            this.isChild(child),
+        if (addedNode) {
+            this.children.push(addedNode);
+        }
+
+        this.children = removeDuplicates(this.children).filter((item) =>
+            this.isChild(item),
         );
         return this;
     }
@@ -117,8 +134,11 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     }
 
     private applyClassList(node: T, classList: TClassList): void {
-        if (typeof classList === 'string') node.classList.add(classList);
-        else node.classList.add(...classList);
+        if (typeof classList === 'string') {
+            node.classList.add(classList);
+        } else {
+            node.classList.add(...classList);
+        }
     }
 
     private appendChildrenToNode(
@@ -126,14 +146,18 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
         children: NonNullable<TChildren>,
     ): BaseComponent[] | [] {
         const result: BaseComponent[] = [];
-        if (Array.isArray(children))
+        if (Array.isArray(children)) {
             children.forEach((child) => {
                 const addedNode = this.appendToNode(node, child);
-                if (addedNode) result.push(addedNode);
+                if (addedNode) {
+                    result.push(addedNode);
+                }
             });
-        else {
+        } else {
             const addedNode = this.appendToNode(node, children);
-            if (addedNode !== undefined) result.push(addedNode);
+            if (addedNode !== undefined) {
+                result.push(addedNode);
+            }
         }
         return result;
     }
@@ -144,7 +168,7 @@ export class BaseComponent<T extends HTMLElement = HTMLElement> {
     ): BaseComponent | undefined {
         if (typeof child === 'string') {
             node.append(document.createTextNode(child));
-            return;
+            return undefined;
         }
         child.setParent(this);
         node.append(child.node);

@@ -1,22 +1,51 @@
 import createComponent, { BaseComponent } from '@components/baseComponent.ts';
-import { IRoute } from '@utils/consts/routes';
+import routes, { IRoute, IRouteParams } from '@utils/consts/routes';
 import throwError from '@utils/helpers/throwError';
 import getRouteByPath from '@utils/helpers/getRouteByPath';
+import { useAuthProvider } from '@services/auth.ts';
 
 class Router {
-    private root: BaseComponent
+    private root: BaseComponent;
 
-    private readonly defaultRoute: IRoute | undefined
+    private readonly defaultRoute: IRoute | undefined;
 
-    private static instance: Router
+    private static instance: Router;
 
-    constructor(rootComponent?: BaseComponent, defaultRoute?: IRoute ) {
-        this.root = this.createOrGetRoot(rootComponent)
-        this.defaultRoute = defaultRoute
+    static create(rootComponent?: BaseComponent, defaultRoute?: IRoute): Router {
         if (Router.instance) {
-            return Router.instance
+            throwError('Router already created');
         }
-        Router.instance = this;
+        if (!useAuthProvider().isInitialized) {
+            throwError('For a Router work, initiate authProvider first');
+        }
+        Router.instance = new Router(rootComponent, defaultRoute);
+        return Router.instance;
+    }
+
+    static getIsInitialized() {
+        return !!Router.instance;
+    }
+
+    private constructor(rootComponent?: BaseComponent, defaultRoute?: IRoute) {
+        this.root = this.createOrGetRoot(rootComponent);
+        this.defaultRoute = defaultRoute;
+    }
+
+    public static initialLoad() {
+        const load = () => {
+            const route = window.location.pathname;
+            const paramsObj: Record<string, string> = {};
+            new URLSearchParams(window.location.search).forEach((value, key) => {
+                paramsObj[key] = value;
+            });
+            Router.instance.route(route, paramsObj, false);
+        };
+
+        window.addEventListener('popstate', () => {
+            load();
+        });
+
+        load();
     }
 
     private createOrGetRoot(rootComponent?: BaseComponent) {
@@ -26,74 +55,102 @@ class Router {
             } else {
                 this.root = createComponent({
                     tag: 'div',
-                    id: 'root'
-                })
-                document.body.append(this.root.getNode())
+                    id: 'root',
+                });
+                document.body.append(this.root.getNode());
             }
         }
-        return this.root
+
+        return this.root;
     }
 
-    public route(toRoute: string | IRoute | undefined, params?: Record<string, string | undefined>) {
-        let route = typeof toRoute === 'string' ? getRouteByPath(toRoute) : toRoute
+    public route(
+        toRoute: string | IRoute | undefined,
+        params?: IRouteParams,
+        pushState = true,
+    ) {
+        let route = typeof toRoute === 'string' ? getRouteByPath(toRoute) : toRoute;
 
-        if (!route && !this.defaultRoute) throwError('Route never exist and default route is not set')
-        if (!route && this.defaultRoute) route = this.defaultRoute
+        if (!route && !this.defaultRoute) {
+            throwError('Route never exist and default route is not set');
+        }
+        if (!route && this.defaultRoute) {
+            route = this.defaultRoute;
+        }
 
         if (route) {
-            const url = new URL(window.location.href)
+            const url = new URL(window.location.href);
+            url.searchParams.forEach((_, key) => url.searchParams.delete(key));
+
             if (params) {
                 Object.entries(params).forEach(([key, value]) => {
-                    if (Object.keys(route?.params || {}).includes(key) && value) {
-                        url.searchParams.set(key, value)
+                    if (value) {
+                        url.searchParams.set(key, String(value));
                     }
-                })
+                });
             }
 
-            url.pathname = route.path
-            window.history.pushState({},'', url)
-            this.root.getChildren().forEach(child => child.destroy())
-            this.root.appendChildren(route.view({}).getChildren())
+            if (route.needAuth && !useAuthProvider().isAuth) {
+                console.log('not auth redirect to login page ');
+                this.route(routes.loginPage);
+                return;
+            }
+
+            url.pathname = route.path;
+            if (pushState) {
+                window.history.pushState({}, '', url);
+            }
+
+            this.root.getChildren().forEach((child) => child.destroy());
+            this.root.appendChildren(route.view({}).getChildren());
         }
     }
 
     getRouteInfo() {
-        const route = getRouteByPath(window.location.pathname)!
-        const routeCopy = JSON.parse(JSON.stringify(route)) as typeof route
-        if (!route) throwError('Route not found')
+        const route = getRouteByPath(window.location.pathname)!;
+        const routeCopy = JSON.parse(JSON.stringify(route)) as typeof route;
+        routeCopy.params = {};
+        if (!route) {
+            throwError('Route not found');
+        }
 
-        const urlParams = new URLSearchParams(window.location.search)
-        Object.keys(route.params || {}).forEach((param) => {
+        const urlParams = new URLSearchParams(window.location.search);
+        Object.keys(route.params ?? {}).forEach((param) => {
             if (routeCopy.params) {
-                routeCopy.params[param] = urlParams.get(param)
+                if (typeof urlParams.get(param) === 'string') {
+                    routeCopy.params[param] = JSON.parse(urlParams.get(param)!) as
+                        | string
+                        | boolean
+                        | number;
+                } else {
+                    routeCopy.params[param] = urlParams.get(param);
+                }
             }
-        })
+        });
 
-        return routeCopy
-    }
-
-    public init() {
-        const route = window.location.pathname
-        const paramsObj: Record<string, string> = {};
-        new URLSearchParams(window.location.search).forEach((value, key) => paramsObj[key] = value)
-        this.route(route, paramsObj)
+        return routeCopy;
     }
 
     static getInstance() {
-        return Router.instance
+        return Router.instance;
     }
 }
 
 export const useRouter = () => {
-    if (!Router.getInstance()) throwError('Router not created')
-    const router = Router.getInstance()
-    const routeInfo = router.getRouteInfo()
-    return { route: router.route.bind(router), args: routeInfo.params }
-}
+    if (!Router.getInstance()) {
+        throwError('Router not created');
+    }
+    const router = Router.getInstance();
+    const routeInfo = router.getRouteInfo();
+    return {
+        route: router.route.bind(router),
+        args: routeInfo.params,
+        isInitialized: Router.getIsInitialized(),
+    };
+};
 
 export const createRouter = (root?: BaseComponent, defaultRoute?: IRoute) => {
-    if (Router.getInstance()) throwError('Router already created')
-    const router = new Router(root, defaultRoute)
-    router.init()
-    return useRouter()
-}
+    Router.create(root, defaultRoute);
+    Router.initialLoad();
+    return useRouter();
+};

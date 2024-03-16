@@ -6,12 +6,11 @@ const buttonComponent: FunctionComponent<HTMLButtonElement> = ({
     classList,
     children,
     ...props
-}) => {
-    return createComponent({
+}) =>
+    createComponent({
         tag: 'button',
         classList: mergeClassLists(style['button'], classList),
         children,
         ...props,
     });
-};
 export default buttonComponent;
