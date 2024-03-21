@@ -36,7 +36,9 @@ const startPageContent: typeof createComponent<HTMLElement> = ({
                     createComponent({
                         tag: 'p',
                         textContent: isAuth
+
                             ? `С возвращением ${user?.name ?? 'Иван'} ${user?.surname ?? 'Иваныч'} быстрей жми на кнопку чтобы продолжить играть!`
+
                             : TextStrings.startPageAboutDescription,
                         classList: style['about-game__description'],
                     }),

@@ -28,14 +28,14 @@ export interface IRoutes {
 const Routes: IRoutes = {
     startPage: {
         name: 'startPage',
-        path: '/',
+        path: '/fymg-JSFE2023Q4/',
         view: startPageView,
         needAuth: false,
         params: {},
     },
     loginPage: {
         name: 'loginPage',
-        path: '/login',
+        path: '/fymg-JSFE2023Q4/login',
         view: loginPageView,
         needAuth: false,
         params: {
@@ -44,7 +44,7 @@ const Routes: IRoutes = {
     },
     gamePage: {
         name: 'gamePage',
-        path: '/game',
+        path: '/fymg-JSFE2023Q4/game',
         view: gamePage,
         needAuth: true,
         params: {

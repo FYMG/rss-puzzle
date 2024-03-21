@@ -6,7 +6,8 @@ class LocalStorageProvider {
 
     private prefix = 'capyPuzzle';
 
-    private version = '1.0.0';
+    private version = '1.0.1';
+
 
     private state: ILocalStorageModel;
 

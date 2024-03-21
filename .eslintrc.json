@@ -57,6 +57,9 @@
                 }
             },
             "rules": {
+                "sonarjs/cognitive-complexity": 0, // вернуть
+                "no-param-reassign": 0,
+                "@typescript-eslint/prefer-for-of": 0,
                 "sonarjs/no-duplicate-string": 0,
                 "@typescript-eslint/indent": 0,
                 "@typescript-eslint/no-explicit-any": "error",

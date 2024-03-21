@@ -1,3 +1,6 @@
+
+import ISaveDataModel from '@models/ISaveDataModel';
+
 export interface IUser {
     name: string;
     surname: string;
@@ -9,7 +12,9 @@ export interface ISession {
     userId: PropertyKey | null;
 }
 
-export type ISaveData = Record<PropertyKey, Record<PropertyKey, string>>;
+
+export type ISaveData = Record<PropertyKey, ISaveDataModel>;
+
 
 export default interface ILocalStorageModel {
     [key: PropertyKey]: unknown;

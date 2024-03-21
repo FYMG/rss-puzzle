@@ -1,0 +1,34 @@
+/* postcss-bem-linter: define play-voice-button */
+.play-voice-button {
+  cursor: pointer;
+  background: none;
+  border: none;
+
+  &_playing {
+    position: relative;
+
+    &::before {
+      content: '';
+
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      border: 5px solid #3dd1e7;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+
+      animation: rotation 1s linear infinite;
+    }
+  }
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

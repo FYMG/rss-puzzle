@@ -1,0 +1,80 @@
+/* postcss-bem-linter: define main */
+.main {
+  margin-top: 45px;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+
+    max-width: 500px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+/* postcss-bem-linter: define game-field */
+.game-field {
+  display: flex;
+  flex-flow: column;
+  gap: 20px;
+
+  width: 100%;
+  padding: 55px;
+
+  border: 2px solid #3dd1e7;
+  border-radius: 45px;
+
+  &__button {
+    cursor: pointer;
+
+    margin: 0;
+    padding: 5px;
+
+    color: white;
+
+    background: #3dd1e7;
+    border: none;
+
+    &:hover,
+    &_active {
+      background: #2cb8d0;
+    }
+
+    &_hidden {
+      display: none;
+    }
+  }
+
+  &__select {
+    background: none;
+    border: none;
+  }
+
+  &__control {
+    margin-bottom: 10px;
+  }
+
+  &__controls-block {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-start;
+
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+/* postcss-bem-linter: define standby-list */
+.standby-list {
+  user-select: none;
+
+  display: flex;
+  align-items: flex-start;
+
+  box-sizing: content-box;
+  width: 100%;
+  min-height: 30px;
+  margin-top: 25px;
+
+  border-bottom: #3dd1e7 solid 2px;
+}

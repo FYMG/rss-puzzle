@@ -33,9 +33,19 @@ class Router {
 
     public static initialLoad() {
         const load = () => {
-            const route = window.location.pathname;
+
+            const redirectUrl = window.location.href.split('/?/')[1];
+            let url = new URL(window.location.href.toString());
+            if (redirectUrl) {
+                url = new URL(
+                    `${window.location.pathname}${redirectUrl}`,
+                    window.location.origin + window.location.pathname,
+                );
+            }
+            const route = url.pathname;
             const paramsObj: Record<string, string> = {};
-            new URLSearchParams(window.location.search).forEach((value, key) => {
+            new URLSearchParams(url.search).forEach((value, key) => {
+
                 paramsObj[key] = value;
             });
             Router.instance.route(route, paramsObj, false);
@@ -62,6 +72,12 @@ class Router {
         }
 
         return this.root;
+
+    }
+
+    getRoot() {
+        return this.root;
+
     }
 
     public route(
@@ -84,7 +100,9 @@ class Router {
 
             if (params) {
                 Object.entries(params).forEach(([key, value]) => {
-                    if (value) {
+
+                    if (value !== null) {
+
                         url.searchParams.set(key, String(value));
                     }
                 });
@@ -94,12 +112,14 @@ class Router {
                 console.log('not auth redirect to login page ');
                 this.route(routes.loginPage);
                 return;
+
             }
 
             url.pathname = route.path;
             if (pushState) {
                 window.history.pushState({}, '', url);
             }
+
 
             this.root.getChildren().forEach((child) => child.destroy());
             this.root.appendChildren(route.view({}).getChildren());
@@ -143,6 +163,9 @@ export const useRouter = () => {
     const router = Router.getInstance();
     const routeInfo = router.getRouteInfo();
     return {
+
+        root: router.getRoot(),
+
         route: router.route.bind(router),
         args: routeInfo.params,
         isInitialized: Router.getIsInitialized(),

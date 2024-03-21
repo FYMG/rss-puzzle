@@ -15,7 +15,9 @@ const loginPageContent: typeof createComponent<HTMLElement> = ({
     ...props
 }) => {
     const { route, args } = useRouter();
-    const { login, singup } = useAuthProvider();
+
+    const { login, singUp } = useAuthProvider();
+
     const reg = args.reg ?? false;
 
     const error = createComponent<HTMLSpanElement>({
@@ -57,7 +59,9 @@ const loginPageContent: typeof createComponent<HTMLElement> = ({
         evt.preventDefault();
         const nameValue = name.getNode().value;
         const surnameValue = surname.getNode().value;
-        const func = [singup, login][reg ? 0 : 1];
+
+        const func = [singUp, login][reg ? 0 : 1];
+
         func?.(nameValue, surnameValue, (reason) => {
             error.getNode().textContent = reason.messages.join(', ');
             if (reason.success) {

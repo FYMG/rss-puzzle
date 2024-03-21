@@ -5,7 +5,7 @@ export default function loginPageValidator(str: string, strMinLength: number) {
         error.push('Поле не может быть пустым');
     } else {
         if (str.length < strMinLength) {
-            error.push(`мнимальная длинна = ${strMinLength}`);
+            error.push(`мнимальная длина = ${strMinLength}`);
         }
         if (str[0]!.toUpperCase() !== str[0]) {
             error.push('первая буква должна быть заглавной');

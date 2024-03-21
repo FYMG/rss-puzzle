@@ -1,6 +1,9 @@
 import { useLocalStorageProvider } from '@services/localStorageProvider.ts';
-import { ISession } from '@models/ILocalStorageModel';
+
+import { ISession, IUser } from '@models/ILocalStorageModel';
 import throwError from '@utils/helpers/throwError';
+import ISaveDataModel from '@models/ISaveDataModel.ts';
+
 
 export enum AuthAction {
     login = 'login',
@@ -42,12 +45,12 @@ class AuthProvider {
         return useLocalStorageProvider().state.session.isAuth;
     }
 
-    public singup(
+
+    public singUp(
         name: string,
         surname: string,
-        callback = (reason: IAuthResult) => {
-            console.log(reason);
-        },
+        callback: (reason: IAuthResult) => void,
+
     ): void {
         const { state } = useLocalStorageProvider();
         const error: IAuthResult = {
@@ -80,12 +83,21 @@ class AuthProvider {
             return;
         }
         state.totalUser += 1;
-        state.saveData[state.totalUser] = {};
+
         state.users[state.totalUser] = {
             name,
             surname,
             saveDataId: state.totalUser,
         };
+
+        state.saveData = {};
+        state.saveData[state.totalUser] = {
+            showPuzzle: true,
+            audioOn: true,
+            translateTextOn: true,
+        };
+
+
         state.session.isAuth = true;
         state.session.userId = state.totalUser;
         callback({
@@ -95,11 +107,9 @@ class AuthProvider {
         });
     }
 
-    public logout(
-        callback = (reason: IAuthResult) => {
-            console.log(reason);
-        },
-    ) {
+
+    public logout(callback: (reason: IAuthResult) => void) {
+
         const { session } = useLocalStorageProvider().state;
         session.isAuth = false;
         session.userId = null;
@@ -110,13 +120,19 @@ class AuthProvider {
         });
     }
 
-    public login(
-        name: string,
-        surname: string,
-        callback = (reason: IAuthResult) => {
-            console.log(reason);
-        },
-    ) {
+
+    public getUser(): { user: IUser; savedData: ISaveDataModel } | never | void {
+        const { state } = useLocalStorageProvider();
+        if (this.getIsAuth()) {
+            const user = state.users[state.session.userId as number]!;
+            const savedData = state.saveData[user.saveDataId as number]!;
+            return { user, savedData };
+        }
+        return undefined;
+    }
+
+    public login(name: string, surname: string, callback: (reason: IAuthResult) => void) {
+
         const { state } = useLocalStorageProvider();
         const userExist = Object.keys(state.users).some((key) => {
             const user = state.users[key];
@@ -143,15 +159,6 @@ class AuthProvider {
         }
     }
 
-    public getUser() {
-        const { state } = useLocalStorageProvider();
-        if (this.getIsAuth()) {
-            return state.users[state.session.userId as string];
-        }
-
-        return undefined;
-    }
-
     static getInstance() {
         return AuthProvider.instance;
     }
@@ -171,10 +178,11 @@ export const useAuthProvider = () => {
     const auth = AuthProvider.getInstance();
     return {
         isAuth: auth.getIsAuth(),
-        singup: auth.singup.bind(auth),
+        singUp: auth.singUp.bind(auth),
         logout: auth.logout.bind(auth),
         login: auth.login.bind(auth),
-        user: auth.getUser(),
+        user: auth.getUser()?.user,
+        saveData: auth.getUser()?.savedData,
         isInitialized: AuthProvider.getIsInitialized(),
     };
 };
