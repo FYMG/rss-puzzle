@@ -1,0 +1,15 @@
+/* postcss-bem-linter: define logo-link */
+.logo-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 35px;
+  height: 35px;
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+  }
+}
